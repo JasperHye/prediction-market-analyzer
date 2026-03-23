@@ -3,7 +3,7 @@ import requests
 import json
 import time
 
-BASE_URL = "https://test-secwarex-api.ansuzsecurity.com"
+BASE_URL = "https://api.secwarex.io"
 
 def fetch_risk_data(platform, slug, retries=3):
     # 参数名高度敏感处理
@@ -17,7 +17,8 @@ def fetch_risk_data(platform, slug, retries=3):
 
     headers = {
         'Content-Type': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        'Accept': 'application/json, text/plain, */*',
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
 
     for attempt in range(1, retries + 1):
