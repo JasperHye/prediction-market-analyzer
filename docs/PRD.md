@@ -26,20 +26,42 @@
 ### 3.3 数据解析原则
 ```json
 {
-  "code": 0,
-  "data": {
-    "tags": [
-      {
-        "name": "liquidity",
-        "riskLevel": 1,
-        "description": "..."
-      }
-    ]
+  "code": 1,
+  "result": {
+    "overallRisk": {
+      "riskLevel": 2,
+      "label": "Caution"
+    },
+    "tags": [ ... ],
+    "notices": [ ... ]
   }
 }
 ```
-- 严禁直接读取扁平属性，必须通过 `tags` 数组检索。
+- **组合策略**：提取在根节点的 `overallRisk` 作为总评。将 `tags` 和 `notices` 数组合并，进行统一的扁平化遍历。
+- **动态读取**：遍历的每一项，读取其 `label` (名称)、`description` (说明) 和 `riskLevel`。
+- **风险映射规则**：
+  - `riskLevel: 1` 映射为 `🟢` (安全/防操纵/分散等正面语意)。
+  - `riskLevel: 2` 映射为 `🟡` (注意/一般等中性/提示语意)。
+  - `riskLevel: 3` 映射为 `🔴` (危险/高风险等负面语意)。
 
 ## 4. 验收标准
-1. 成功处理 Kalshi 的 `eventTicker` 参数。
-2. 报告能正确展示 `tags` 数组中的多项指标及其风险等级（1-安全，2-注意，3-危险）。
+1. 成功处理 Kalshi 的 `eventTicker` 参数或 Polymarket 的 `slug` 参数。
+2. 报告必须包含统一的“总体评估”，并将所有 API 返回的指标拍平展示。
+3. 纯文本最终回复中严禁出现原始的 `1/2/3` 面向机器的评级数字。
+
+## 5. 测试规约 (Testing)
+### 5.1 单元测试 (Unit Tests)
+- **目标**: 验证 `parse_tags` 函数在各种 JSON 响应下的解析正确性。
+- **覆盖场景**: 
+    - 正常返回多个 tags。
+    - 返回 notices 而非 tags。
+    - 返回结果为空或 `None`。
+    - 字段缺失逻辑。
+
+### 5.3 交互快照测试 (Interaction Snapshot Tests)
+- **目标**: 模拟端到端对话流，输出“用户问 -> AI 调 -> AI 答”的完整链路记录。
+- **输出**: 自动化生成 `tests/test_report.md`，用于人类审查 Skill 的表达真实性。
+- **验证项**:
+    - 是否正确触发 Skill。
+    - 提取的参数（slug/ticker）是否准确。
+    - 最终回复是否符合 Formatting Standards。

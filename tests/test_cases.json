@@ -1,0 +1,49 @@
+[
+  {
+    "id": 1,
+    "scenario": "Polymarket 显式查询",
+    "prompt": "帮我看看这个 Polymarket 事件安全吗：https://polymarket.com/event/aliens-exist",
+    "expected_platform": "polymarket",
+    "expected_slug": "aliens-exist",
+    "mock_data": {
+      "result": {
+        "overallRisk": {
+          "riskLevel": 1,
+          "label": "安全"
+        },
+        "tags": [
+          {"name": "liquidity", "label": "流动性", "riskLevel": 1, "description": "池子很深，适合大额交易"},
+          {"name": "contract", "label": "合约安全性", "riskLevel": 1, "description": "经过审计，无漏洞"}
+        ]
+      }
+    }
+  },
+  {
+    "id": 2,
+    "scenario": "Kalshi 隐式触发（API 故障应静默）",
+    "prompt": "这个 Kalshi 的 kxaliens 值得买吗？",
+    "expected_platform": "kalshi",
+    "expected_slug": "kxaliens",
+    "mock_error": 500,
+    "reasoning_target": "根据 PRD 3.3，隐式触发且 API 失败时不应干扰用户，保持静默。"
+  },
+  {
+    "id": 3,
+    "scenario": "Kalshi 成功查询",
+    "prompt": "Kalshi 上的 kxaliens-2025 安全吗？",
+    "expected_platform": "kalshi",
+    "expected_slug": "kxaliens-2025",
+    "mock_data": {
+      "result": {
+        "overallRisk": {
+          "riskLevel": 2,
+          "label": "谨慎参与"
+        },
+        "tags": [
+          {"name": "liquidity", "label": "流动性", "riskLevel": 2, "description": "交易量较小，撤退需谨慎"}
+        ]
+      }
+    },
+    "reasoning_target": "显式查询安全性，应展示风险简报。"
+  }
+]

@@ -3,7 +3,9 @@
 ## [2026-03-20]
 ### Added
 - 初始化项目结构（基于 template-skill）。
-- 编写初始 PRD 需求文档。
+- [Project] 完成 1-5 阶段生命周期治理架构调整。
+- [Skill] 开始建立自动化测试框架，规划单元测试与集成测试内容。
+- [Skill] 优化简报排版：提取 `overallRisk` 作总评，将 `tags` 与 `notices` 合并为单层扁平列表，增加 `绿黄红` 动态状态映射，剔除数字评级。
 
 ### Changed
 - 修正物理目录结构以对齐官方规范（SKILL.md 移至根目录，tools 命名为 scripts）。

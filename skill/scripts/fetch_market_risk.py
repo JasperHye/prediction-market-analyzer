@@ -53,7 +53,23 @@ def parse_tags(data):
     if not data:
         return {"error": "No data found to parse"}
     
+    def map_risk(level):
+        if level == 1:
+            return "SAFE"
+        elif level == 2:
+            return "CAUTION"
+        elif level == 3:
+            return "DANGER"
+        return "UNKNOWN"
+
     parsed_results = []
+    
+    # 提取总评并映射风险等级
+    overall = data.get('overallRisk', {})
+    overall_mapped = {
+        "label": overall.get("label", "Unknown"),
+        "riskLevel": map_risk(overall.get("riskLevel"))
+    }
     
     # 解析 tags 数组
     for tag in data.get('tags', []):
@@ -61,7 +77,7 @@ def parse_tags(data):
             "type": "tag",
             "item": tag.get("name"),
             "label": tag.get("label", tag.get("name")),
-            "riskLevel": tag.get("riskLevel"),
+            "riskLevel": map_risk(tag.get("riskLevel")),
             "description": tag.get("description")
         })
     
@@ -71,11 +87,14 @@ def parse_tags(data):
             "type": "notice",
             "item": notice.get("name"),
             "label": notice.get("label", notice.get("name")),
-            "riskLevel": notice.get("riskLevel"),
+            "riskLevel": map_risk(notice.get("riskLevel")),
             "description": notice.get("description")
         })
         
-    return {"results": parsed_results}
+    return {
+        "overallRisk": overall_mapped,
+        "results": parsed_results
+    }
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
