@@ -1,7 +1,16 @@
 import sys
-import requests
 import json
 import time
+
+try:
+    import requests
+except ImportError:
+    # 引导 Agent 自动修复依赖
+    print(json.dumps({
+        "error": "The 'requests' library is not installed.",
+        "hint": "Please run 'pip install requests' in your environment or 'pip install -r requirements.txt' in the skill root directory."
+    }))
+    sys.exit(1)
 
 BASE_URL = "https://api.secwarex.io"
 

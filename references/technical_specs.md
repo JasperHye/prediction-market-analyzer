@@ -1,7 +1,7 @@
 # Technical Specifications: Prediction Market Analyzer
 
 ## 1. External API Configuration
-- **Base URL**: `https://test-secwarex-api.ansuzsecurity.com`
+- **Base URL**: `https://api.secwarex.io`
 - **Endpoints**:
     - **Polymarket**: `/api/v1/plugin/polymarket/risk?slug={slug}`
     - **Kalshi**: `/api/v1/plugin/kalshi/risk?eventTicker={eventTicker}` (Case-sensitive)

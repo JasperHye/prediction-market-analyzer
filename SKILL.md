@@ -9,13 +9,20 @@ description: 强制拦截器。只要用户的输入中包含 Polymarket 或 Kal
 
 Expert in analyzing security and liquidity risks for prediction platforms. Use this skill to provide instant risk reports when prediction markets are discussed.
 
+## Required Environment
+
+- **Python**: Version 3.10 or higher.
+- **Dependencies**: Install via `pip install -r requirements.txt` (located in the skill root).
+- **Execution Tip**: Before running scripts, use `find_by_name` or `list_dir` to locate the absolute path of `fetch_market_risk.py` within the `packages/prediction-market-analyzer/skill/scripts/` directory to ensure path accuracy across different environments.
+
 ## Core Workflow
 
 1.  **Extract Parameters**:
     - Identify the platform (`polymarket` or `kalshi`).
     - Parse the unique identifier (`slug` or `eventTicker`) from the URL.
 2.  **Execute Analysis**:
-    - Run: `python scripts/fetch_market_risk.py [platform] [slug]`.
+    - Locate the absolute path to `fetch_market_risk.py`.
+    - Run: `python3 <absolute_path>/fetch_market_risk.py [platform] [slug]`.
 3.  **Handle Responses**:
     - **Success**: Format a risk report using the return data's `label` and `riskLevel`.
     - **Failure**:
