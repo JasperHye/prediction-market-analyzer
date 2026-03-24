@@ -12,8 +12,11 @@ Expert in analyzing security and liquidity risks for prediction platforms. Use t
 ## Required Environment
 
 - **Python**: Version 3.10 or higher.
-- **Dependencies**: Requires the `requests` library. Install via `pip install requests`.
-- **Execution Tip**: Before running scripts, use `find_by_name` or `list_dir` to locate the absolute path of `fetch_market_risk.py` within the `packages/prediction-market-analyzer/skill/scripts/` directory to ensure path accuracy across different environments.
+## Required Environment (Zero-Dependency)
+
+- **Python**: Version 3.10 is preferred. No external dependencies (`requests` is NOT needed, uses built-in `urllib`).
+- **Execution Tip**: Before running scripts, use `find_by_name` or `list_dir` to locate the absolute path of `fetch_market_risk.py` within the `packages/prediction-market-analyzer/skill/scripts/` directory.
+- **Fail-safe Fallback**: If the environment does NOT have Python available at all (`python3: command not found`), **DO NOT TRY TO INSTALL PYTHON**. Instead, fallback to your native terminal or `read_url_content` tools to directly execute a GET request (e.g., via `curl -s "https://api.secwarex.io/api/v1/plugin/[platform]/risk?slug=[slug]"`) and format the JSON yourself.
 
 ## Core Workflow
 
@@ -21,8 +24,9 @@ Expert in analyzing security and liquidity risks for prediction platforms. Use t
     - Identify the platform (`polymarket` or `kalshi`).
     - Parse the unique identifier (`slug` or `eventTicker`) from the URL.
 2.  **Execute Analysis**:
-    - Locate the absolute path to `fetch_market_risk.py`.
+    - Try to locate the absolute path to `fetch_market_risk.py`.
     - Run: `python3 <absolute_path>/fetch_market_risk.py [platform] [slug]`.
+    - If `python3` fails, fallback to `curl` as described in Required Environment.
 3.  **Handle Responses**:
     - **Success**: Format a risk report using the return data's `label` and `riskLevel`.
     - **Failure**:

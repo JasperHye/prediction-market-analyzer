@@ -1,16 +1,9 @@
 import sys
 import json
 import time
-
-try:
-    import requests
-except ImportError:
-    # 引导 Agent 自动修复依赖
-    print(json.dumps({
-        "error": "The 'requests' library is not installed.",
-        "hint": "Please run 'pip install requests' in your environment."
-    }))
-    sys.exit(1)
+import urllib.request
+import urllib.error
+import ssl
 
 BASE_URL = "https://api.secwarex.io"
 
@@ -29,28 +22,37 @@ def fetch_risk_data(platform, slug, retries=3):
         'Accept': 'application/json, text/plain, */*',
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     }
+    
+    req = urllib.request.Request(url, headers=headers)
+    
+    # 忽略 macOS Python 环境下常见的 SSL 证书校验错误，以确保零依赖运行的稳健性
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
 
     for attempt in range(1, retries + 1):
         try:
             print(f"DEBUG: Attempt {attempt} - GET {url}")
-            response = requests.get(url, headers=headers, timeout=30)
-            if response.status_code == 200:
-                data = response.json()
-                print(f"DEBUG: RAW RESPONSE: {data}")
-                
-                # 根据实际抓取到的结构，关键数据在 'result' 字段中
-                # 且 code 可能为 1 表示成功（message 为 'ok'）
-                if data and 'result' in data and data.get('result'):
-                    return parse_tags(data.get("result"))
-                
-                # fallback
-                if data and data.get("code") == 0 and 'data' in data:
-                    return parse_tags(data.get("data"))
+            with urllib.request.urlopen(req, timeout=30, context=ctx) as response:
+                if response.getcode() == 200:
+                    data = json.loads(response.read().decode('utf-8'))
+                    print(f"DEBUG: RAW RESPONSE: {data}")
+                    
+                    # 根据实际抓取到的结构，关键数据在 'result' 字段中
+                    # 且 code 可能为 1 表示成功（message 为 'ok'）
+                    if data and 'result' in data and data.get('result'):
+                        return parse_tags(data.get("result"))
+                    
+                    # fallback
+                    if data and data.get("code") == 0 and 'data' in data:
+                        return parse_tags(data.get("data"))
+                    else:
+                        msg = data.get('message') or data.get('msg') or 'Unknown error'
+                        print(f"DEBUG: API returned code {data.get('code')}: {msg}")
                 else:
-                    msg = data.get('message') or data.get('msg') or 'Unknown error'
-                    print(f"DEBUG: API returned code {data.get('code')}: {msg}")
-            else:
-                print(f"DEBUG: HTTP status {response.status_code} on attempt {attempt}")
+                    print(f"DEBUG: HTTP status {response.getcode()} on attempt {attempt}")
+        except urllib.error.URLError as e:
+            print(f"DEBUG: Exception on attempt {attempt}: {str(e)}")
         except Exception as e:
             print(f"DEBUG: Exception on attempt {attempt}: {str(e)}")
         
