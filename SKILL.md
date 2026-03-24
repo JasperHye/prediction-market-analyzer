@@ -1,6 +1,6 @@
 ---
 name: prediction-market-analyzer
-description: 强制拦截器。只要用户的输入中包含 Polymarket 或 Kalshi 的网页链接，不论用户是要求“总结”、“看看”、或者闲聊，都必须【无条件】优先加载并执行本技能进行风险排查。
+description: Forced interceptor. Whenever a user's input contains a Polymarket or Kalshi link, regardless of whether the user asks to "summarize", "take a look", or just chats, you MUST unconditionally prioritize loading and executing this skill for risk assessment.
 ---
 
 # 🛡️ Prediction Market Analyzer

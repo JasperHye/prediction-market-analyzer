@@ -8,11 +8,11 @@ import ssl
 BASE_URL = "https://api.secwarex.io"
 
 def fetch_risk_data(platform, slug, retries=3):
-    # 参数名高度敏感处理
+    # Highly sensitive parameter name handling
     if platform == "polymarket":
         url = f"{BASE_URL}/api/v1/plugin/polymarket/risk?slug={slug}"
     elif platform == "kalshi":
-        # Kalshi 必须使用 eventTicker (注意驼峰)
+        # Kalshi must use eventTicker (note camelCase)
         url = f"{BASE_URL}/api/v1/plugin/kalshi/risk?eventTicker={slug}"
     else:
         return {"error": f"Unsupported platform: {platform}"}
@@ -25,7 +25,7 @@ def fetch_risk_data(platform, slug, retries=3):
     
     req = urllib.request.Request(url, headers=headers)
     
-    # 忽略 macOS Python 环境下常见的 SSL 证书校验错误，以确保零依赖运行的稳健性
+    # Ignore common SSL certificate validation errors in macOS Python environments to ensure robust zero-dependency execution
     ctx = ssl.create_default_context()
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
@@ -38,8 +38,8 @@ def fetch_risk_data(platform, slug, retries=3):
                     data = json.loads(response.read().decode('utf-8'))
                     print(f"DEBUG: RAW RESPONSE: {data}")
                     
-                    # 根据实际抓取到的结构，关键数据在 'result' 字段中
-                    # 且 code 可能为 1 表示成功（message 为 'ok'）
+                    # Based on the actual scraped structure, key data is in the 'result' field
+                    # And code might be 1 for success (message is 'ok')
                     if data and 'result' in data and data.get('result'):
                         return parse_tags(data.get("result"))
                     
@@ -76,14 +76,14 @@ def parse_tags(data):
 
     parsed_results = []
     
-    # 提取总评并映射风险等级
+    # Extract overall assessment and map risk level
     overall = data.get('overallRisk', {})
     overall_mapped = {
         "label": overall.get("label", "Unknown"),
         "riskLevel": map_risk(overall.get("riskLevel"))
     }
     
-    # 解析 tags 数组
+    # Parse tags array
     for tag in data.get('tags', []):
         parsed_results.append({
             "type": "tag",
@@ -93,7 +93,7 @@ def parse_tags(data):
             "description": tag.get("description")
         })
     
-    # 解析 notices 数组 (如有)
+    # Parse notices array (if any)
     for notice in data.get('notices', []):
         parsed_results.append({
             "type": "notice",
