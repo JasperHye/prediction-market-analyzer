@@ -8,7 +8,7 @@ except ImportError:
     # 引导 Agent 自动修复依赖
     print(json.dumps({
         "error": "The 'requests' library is not installed.",
-        "hint": "Please run 'pip install requests' in your environment or 'pip install -r requirements.txt' in the skill root directory."
+        "hint": "Please run 'pip install requests' in your environment."
     }))
     sys.exit(1)
 

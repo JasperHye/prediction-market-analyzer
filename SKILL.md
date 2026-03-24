@@ -12,7 +12,7 @@ Expert in analyzing security and liquidity risks for prediction platforms. Use t
 ## Required Environment
 
 - **Python**: Version 3.10 or higher.
-- **Dependencies**: Install via `pip install -r requirements.txt` (located in the skill root).
+- **Dependencies**: Requires the `requests` library. Install via `pip install requests`.
 - **Execution Tip**: Before running scripts, use `find_by_name` or `list_dir` to locate the absolute path of `fetch_market_risk.py` within the `packages/prediction-market-analyzer/skill/scripts/` directory to ensure path accuracy across different environments.
 
 ## Core Workflow
